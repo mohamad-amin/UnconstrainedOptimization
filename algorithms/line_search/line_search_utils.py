@@ -35,13 +35,13 @@ def interpolation_step_length(f, g, x, alpha0, p, c):
     alpha = alpha0
     phi_0 = f(x)
     phi_prime_0 = np.matmul(g(x).T, p)
-    phi_alpha_0 = f(x + alpha0*p)
+    phi_alpha_0 = f(x + alpha*p)
     next_alpha = quadratic_interpolation_step_length(phi_0, phi_prime_0, phi_alpha_0, alpha)
     while not step_has_sufficient_decrease(f, g, x, next_alpha, p, c):
         phi_alpha = f(x + alpha*p)
         phi_next_alpha = f(x + alpha*next_alpha)
         new_alpha = cubic_interpolation_step_length(alpha, next_alpha, phi_alpha, phi_next_alpha, phi_0, phi_prime_0)
-        if new_alpha <= next_alpha/5. or close_enough(new_alpha, next_alpha, 1e-2):
+        if new_alpha <= next_alpha/4. or np.allclose(new_alpha, next_alpha, 5e-2) or np.isnan(new_alpha):
             alpha = next_alpha
             next_alpha = next_alpha/2
         else:
@@ -61,4 +61,7 @@ def cubic_interpolation_step_length(alpha_0, alpha_1, phi_alpha_0, phi_alpha_1, 
     helper = helper1 * np.matmul(helper2, helper3)
     a = helper[0]
     b = helper[1]
-    return (-b + np.sqrt(b**2 - 3*a*phi_prime_0)) / (3*a)
+    s = b**2 - 3*a*phi_prime_0
+    if np.isnan(s) or s < 0:
+        return np.nan
+    return (-b + np.sqrt(s)) / (3*a)

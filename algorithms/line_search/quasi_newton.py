@@ -1,5 +1,6 @@
 from algorithms.linalg_utils import *
 from line_search_utils import *
+from functions import *
 
 
 class HessianMethod:
@@ -66,10 +67,13 @@ def quasi_newton(f, g, hf, x0, c, r, alpha0, backtrack_selection=True, repair_he
     return next_x, f(next_x), iterations
 
 
-# x, fx, iterations = quasi_newton(f2, g2, h2, x2, .01, 0.9, .1, repair_hessian=False,
-#                                  backtrack_selection=True, hessian_method=HessianMethod.SR1)
+
+# x, fx, iterations = quasi_newton(f1, g1, h1, np.array([-1, 1]), c=.1, r=.9, alpha0=.1,
+#                                     backtrack_selection=True,
+#                                     repair_hessian=True,
+#                                     hessian_method=HessianMethod.SR1)
 #
 # print('Result after %d iterations:' % iterations)
 # print('x -> ', x)
 # print('f(x) -> ', fx)
-
+#
